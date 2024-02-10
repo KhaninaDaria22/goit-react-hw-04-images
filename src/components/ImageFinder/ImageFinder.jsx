@@ -20,26 +20,28 @@ const ImageFinder = () => {
     const [largeImage, setLargeImage] = useState('');
   
     useEffect(() => {
-      if (search) {
-        fetchImages();
+      const fetchImages = async() => {
+          try {
+              setLoading(true);
+              const respImage = await searchImage(search, page);
+              const { hits } = respImage.data;
+              setImages(prevImages => hits?.length ? [...prevImages, ...hits] : prevImages)
+          }
+
+          catch (error) {
+              setError(error.message);
+          }
+
+          finally {
+              setLoading(false);
+          }
       }
-    }, [search, page]);
-  
-    const fetchImages = () => {
-      setLoading(true);
-      searchImage(search, page)
-        .then(respImage => {
-          const { hits } = respImage.data;
-          setImages(prevImages => (hits?.length ? [...prevImages, ...hits] : prevImages));
-        })
-        .catch(error => {
-          setError(error.message);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    };
-  
+
+      if(search) {
+          fetchImages();
+      }
+  }, [search, page])
+    
     const handleSearch = ({ search }) => {
       setSearch(search);
       setImages([]);
