@@ -25,17 +25,19 @@ const ImageFinder = () => {
       }
     }, [search, page]);
   
-    const fetchImages = async () => {
-      try {
-        setLoading(true);
-        const respImage = await searchImage(search, page);
-        const { hits } = respImage.data;
-        setImages(prevImages => (hits?.length ? [...prevImages, ...hits] : prevImages));
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
+    const fetchImages = () => {
+      setLoading(true);
+      searchImage(search, page)
+        .then(respImage => {
+          const { hits } = respImage.data;
+          setImages(prevImages => (hits?.length ? [...prevImages, ...hits] : prevImages));
+        })
+        .catch(error => {
+          setError(error.message);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     };
   
     const handleSearch = ({ search }) => {
