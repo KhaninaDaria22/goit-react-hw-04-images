@@ -23,7 +23,7 @@ const Modal = ({ children, close }) => {
   }, [close]);
 
     return createPortal(
-      (<div className={styles.overlay} onClick={closeModal}>
+      (<div className={styles.overlay} onClick={close}>
           <div className={styles.modal} >                    
               {children}
           </div>
